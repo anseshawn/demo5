@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>userInput.jsp</title>
+	<th:block th:insert="~{/include/bs4}"></th:block>
+</head>
+<body>
+<p><br/></p>
+<div class="container">
+	<div id="userInput">
+		<form name="myform" method="post">
+			<table class="table table-bordered">
+				<tr>
+					<th>아이디</th>
+					<td><input type="text" name="mid" class="form-control"/></td>
+				</tr>
+				<tr>
+					<th>이름</th>
+					<td><input type="text" name="name" class="form-control"/></td>
+				</tr>
+				<tr>
+					<th>나이</th>
+					<td><input type="number" name="age" value="20" class="form-control"/></td>
+				</tr>
+				<tr>
+					<th>주소</th>
+					<td><input type="text" name="address" class="form-control"/></td>
+				</tr>
+				<tr>
+					<td colspan="2" class="text-center">
+						<input type="submit" value="회원가입" class="btn btn-primary" />
+						<input type="reset" value="다시입력" class="btn btn-secondary" />
+						<input type="button" th:onclick="|location.href='@{/user/userList}'|" value="돌아가기" class="btn btn-secondary" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
+<p><br/></p>
+</body>
+</html>

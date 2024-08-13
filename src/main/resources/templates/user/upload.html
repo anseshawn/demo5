@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>upload.jsp</title>
+	<th:block th:insert="~{/include/bs4}"></th:block>
+	<script>
+		'use strict';
+
+    let message = '[[${message}]]';
+    if(message != '') alert(message);
+	</script>
+</head>
+<body>
+<p><br/></p>
+<div class="container">
+	<!--<form name="uploadForm" method="post" th:action="@{/upload}" enctype="multipart/form-data">-->
+  <form name="uploadForm" method="post" enctype="multipart/form-data">
+	  <h2>파일 업로드 연습</h2>
+	  <table class="table table-bordered">
+	    <tr>
+	      <th>파일명</th>
+	      <td><input type="file" name="fName" class="form-control-file border"/></td>
+	    </tr>
+	    <tr>
+	      <td colspan="2">
+					<div class="row">
+						<div class="col">
+						<input type="submit" value="파일업로드" class="btn btn-success"/>
+						<input type="reset" value="다시입력" class="btn btn-warning"/>
+						<input type="button" value="돌아가기" th:onclick="|location.href='@{/user/userList}'|" class="btn btn-secondary"/>
+						</div>
+						<div class="col text-right">
+							<input type="button" value="파일보기" th:onclick="|location.href='@{/uploadList}'|" class="btn btn-info"/>
+						</div>
+					</div>
+	      </td>
+	    </tr>
+	  </table>
+  </form>
+</div>
+<p><br/></p>
+</body>
+</html>

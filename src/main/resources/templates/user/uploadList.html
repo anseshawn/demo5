@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>fileList.jsp</title>
+	<th:block th:insert="~{/include/bs4}"></th:block>
+  <script>
+		'use strict';
+
+    let message = '[[${message}]]';
+    if(message != '') alert(message);
+
+	  // 전체선택
+	  $(function(){
+	  	$("#checkAll").click(function(){
+	  		if($("#checkAll").prop("checked")) {
+		    		$(".chk").prop("checked", true);
+	  		}
+	  		else {
+		    		$(".chk").prop("checked", false);
+	  		}
+	  	});
+	  });
+	  
+	  // 선택항목 반전
+	  $(function(){
+	  	$("#reversekAll").click(function(){
+	  		$("#checkAll").prop("checked",false);
+	  		$(".chk").prop("checked", function(){
+	  			return !$(this).prop("checked");
+	  		});
+	  	});
+	  });
+	  
+	  // 선택항목 삭제하기(ajax처리하기)
+	  function selectDelCheck() {
+	  	let ans = confirm("선택된 모든 게시물을 삭제 하시겠습니까?");
+	  	if(!ans) return false;
+	  	let delItems = "";
+	  	for(let i=0; i<myform.chk.length; i++) {
+	  		if(myform.chk[i].checked == true) delItems += myform.chk[i].value + "/";
+	  	}
+	  	if(delItems == "") {
+	  		alert("한개 이상을 선택후 처리하세요.");
+	  		return false;
+	  	}
+			
+	  	$.ajax({
+	  		type : "post",
+	  		url  : "/fileSelectDelete",
+	  		data : {delItems : delItems},
+	  		success:function(res) {
+	  			if(res == "1") {
+	  				alert("선택된 파일을 삭제처리 하였습니다.");
+	  			  location.reload();
+	  			}
+	  		},
+	  		error  :function() {
+	  			alert("전송오류!!");
+	  		}
+	  	});
+	  }
+	  
+    // 화살표클릭시 화면 상단으로 부드럽게 이동하기
+    $(window).scroll(function(){
+    	if($(this).scrollTop() > 100) {
+    		$("#topBtn").addClass("on");
+    	}
+    	else {
+    		$("#topBtn").removeClass("on");
+    	}
+    	
+    	$("#topBtn").click(function(){
+    		window.scrollTo({top:0, behavior: "smooth"});
+    	});
+    });
+  </script>
+  <style>
+		h6 {
+		  position: fixed;
+		  right: 1rem;
+		  bottom: -50px;
+		  transition: 0.7s ease;
+		}
+   	.on {
+		  opacity: 0.8;
+		  cursor: pointer;
+		  bottom: 0;
+		}
+  </style>
+</head>
+<body>
+<p><br/></p>
+<div class="container">
+  <h2>서버 파일 리스트</h2>
+  <hr/>
+  <p>서버의 파일 경로 : /webapp/upload/~~~파일명</p>
+  <hr/>
+  <form name="myform">
+	  <table class="table table-hover text-center">
+	    <tr>
+	      <td colspan="4">
+	        <input type="checkbox" id="checkAll" onclick="checkAllCheck()"/>전체선택/해제 &nbsp;&nbsp;
+	        <input type="checkbox" id="reversekAll" onclick="reverseAllCheck()"/>선택반전 &nbsp;&nbsp;
+	        <input type="button" value="선택항목삭제" onclick="selectDelCheck()" class="btn btn-danger btn-sm mr-3"/>
+	        <input type="button" value="돌아가기" th:onclick="|location.href='@{/upload}'|" class="btn btn-warning btn-sm"/>
+	      </td>
+	    </tr>
+	    <tr class="table-dark text-dark">
+	      <th>선택</th><th>번호</th><th>파일명</th><th>그림파일</th>
+	    </tr>
+			<th:block th:if="${#lists.isEmpty(files)}">
+				<td colspan="4" class="text-center">파일이 존재하지 않습니다.</td>
+			</th:block>
+			<th:block th:if="${!#lists.isEmpty(files)}">
+				<th:block th:each="file, st : ${files}">
+					<tr>
+						<td>
+							<input type="checkbox" name="chk" class="chk" th:value="${file}"/>
+						</td>
+						<td>[[${st.count}]]</td>
+						<td><a th:href="@{upload/}+${file}" th:download="${file}" title="다운로드">[[${file}]]</a></td>
+						<td th:with="ext=${#strings.substring(file,#strings.length(file)-3)}">
+							<th:block th:if="${ext=='jpg' or ext=='gif' or ext=='png'}">
+								<a th:href="@{upload/}+${file}" target="_blank"> <!-- '/'안붙여도 루트부터 (붙이면 webapp부터) -->
+									<img th:src="@{/upload/}+${file}" width="150px"/>
+								</a>
+							</th:block>
+							<th:block th:unless="${ext=='jpg' or ext=='gif' or ext=='png'}">
+								[[${file}]]
+							</th:block>
+						</td>
+					</tr>
+				</th:block>
+			</th:block>
+		  <tr><td colspan="4" class="m-0 p-0"></td></tr>
+	  </table>
+  </form>
+</div>
+<p><br/></p>
+<!-- 위로가기 버튼 -->
+<h6 id="topBtn" class="text-right mr-3"><img src="/images/arrowTop.gif" title="위로이동"/></h6>
+</body>
+</html>
